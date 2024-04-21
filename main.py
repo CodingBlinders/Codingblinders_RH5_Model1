@@ -96,14 +96,56 @@ class DiabetesData(BaseModel):
     Obesity_No: bool
     Obesity_Yes: bool
 
+    # Define column mapping for the new structure
+
+column_mapping = {
+    "Age": "Age",
+    "Gender_Female": "Gender_Female",
+    "Gender_Male": "Gender_Male",
+    "Polyuria_No": "Polyuria_No",
+    "Polyuria_Yes": "Polyuria_Yes",
+    "Polydipsia_No": "Polydipsia_No",
+    "Polydipsia_Yes": "Polydipsia_Yes",
+    "sudden_weight_loss_No": "sudden weight loss_No",
+    "sudden_weight_loss_Yes": "sudden weight loss_Yes",
+    "weakness_No": "weakness_No",
+    "weakness_Yes": "weakness_Yes",
+    "Polyphagia_No": "Polyphagia_No",
+    "Polyphagia_Yes": "Polyphagia_Yes",
+    "Genital_thrush_No": "Genital thrush_No",
+    "Genital_thrush_Yes": "Genital thrush_Yes",
+    "visual_blurring_No": "visual blurring_No",
+    "visual_blurring_Yes": "visual blurring_Yes",
+    "Itching_No": "Itching_No",
+    "Itching_Yes": "Itching_Yes",
+    "Irritability_No": "Irritability_No",
+    "Irritability_Yes": "Irritability_Yes",
+    "delayed_healing_No": "delayed healing_No",
+    "delayed_healing_Yes": "delayed healing_Yes",
+    "partial_paresis_No": "partial paresis_No",
+    "partial_paresis_Yes": "partial paresis_Yes",
+    "muscle_stiffness_No": "muscle stiffness_No",
+    "muscle_stiffness_Yes": "muscle stiffness_Yes",
+    "Alopecia_No": "Alopecia_No",
+    "Alopecia_Yes": "Alopecia_Yes",
+    "Obesity_No": "Obesity_No",
+    "Obesity_Yes": "Obesity_Yes"
+}
+
 
 @app.post("/predictDiabetics")
 async def predict_diabetes(data: DiabetesData):
+    # Convert request data to dictionary
     new_data = data.dict()
-    new_data_df = pd.DataFrame([new_data], index=[None])
 
+    # Map keys to new structure
+    new_data_value = {column_mapping[key]: value for key, value in new_data.items()}
 
-    print(new_data_df)
+    # # Create a DataFrame
+    new_data_df = pd.DataFrame(new_data_value, index=[0])
+
+    # # Use the trained model to predict whether the individual is a heart patient or not
+    prediction = clf.predict(new_data_df)
 
     # Use the trained model to predict whether the individual has diabetes or not
     prediction = clf.predict(new_data_df)
